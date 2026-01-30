@@ -1,34 +1,36 @@
 import { Game } from "./Game";
 import { State } from "./State";
 
-// Объект для сохранения игры
-// key рекомендуется инициализировать 
-//  с помощью new Date().toLocaleString()
 type Saving = {
     key: string
     game: Game
 }
 
-// Класс позволяет сохранять и восстанавливать игры
 export class Site {
-    // Текущая игра
     game: Game = new Game()
-    // Сохраненные игры
     Games: Saving[] = []
 
     save() {
-        // TODO
-        // сохраняет текущую игру в массив Games
+        const key = new Date().toLocaleString();
+        this.Games.push({
+            key: key,
+            game: this.game.clone()
+        });
+        console.log(`Игра сохранена под ключом: "${key}"`);
     }
 
-    load(index: number) {
-        // TODO
-        // загружает игру по ее индексу в массиве
+    load(index: number): boolean {
+        if (index < 0 || index >= this.Games.length) {
+            console.log(`Игра с индексом ${index} не найдена.`);
+            return false;
+        }
+        const savedGame = this.Games[index].game.clone();
+        this.game = savedGame;
+        console.log(`Игра "${this.Games[index].key}" загружена.`);
+        return true;
     }
 
     keys(): string[] {
-        // TODO
-        // вовзращает список ключей игр из массива Games
-        return []
+        return this.Games.map((saving, index) => `${index}: ${saving.key}`);
     }
 }
